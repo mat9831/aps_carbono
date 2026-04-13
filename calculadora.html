@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Carbono — PlanetaLivre</title>
+  <link rel="stylesheet" href="css/calculadora.css">
+</head>
+<body>
+
+<nav>
+  <div class="logo">PlanetaLivre</div>
+  <a href="index.html" class="back-link">← Voltar ao início</a>
+</nav>
+
+<div class="hero-calc">
+  <div class="overline">Ferramenta gratuita</div>
+  <h1>Calculadora de <em>Pegada de Carbono</em></h1>
+  <p>Preencha os campos com seus dados reais, clique em <strong style="color:var(--amber-light)">Calcular</strong> e descubra sua emissão anual de CO₂.</p>
+</div>
+
+<div class="calc-layout">
+
+  <!-- ════════════ FORMULÁRIO ════════════ -->
+  <div class="form-panel">
+
+    <!-- Tipo -->
+    <div class="tipo-bar">
+      <span class="tipo-label">Calcular como</span>
+      <div class="toggle-group">
+        <button class="toggle-btn active" onclick="setTipo('pessoa')" id="btn-pessoa">Pessoa física</button>
+        <button class="toggle-btn"        onclick="setTipo('empresa')" id="btn-empresa">Empresa</button>
+      </div>
+    </div>
+
+    <!-- ── TRANSPORTE ── -->
+    <div class="category-card">
+      <div class="category-header">
+        <div class="cat-icon">🚗</div>
+        <div>
+          <div class="cat-name">Transporte</div>
+          <div class="cat-sub">Deslocamentos, combustível e aviação</div>
+        </div>
+      </div>
+      <div class="category-body">
+
+        <div class="field-row">
+          <div class="field">
+            <label>Km percorridos por mês (carro)</label>
+            <div class="input-wrap">
+              <input type="number" id="inp-km" min="0" placeholder="ex: 800">
+              <span class="input-unit">km/mês</span>
+            </div>
+            <span class="hint">Média BR: ~800 km/mês</span>
+          </div>
+
+          <div class="field">
+            <label>Voos de avião por ano</label>
+            <div class="input-wrap">
+              <input type="number" id="inp-aviao" min="0" placeholder="ex: 4">
+              <span class="input-unit">voos/ano</span>
+            </div>
+            <span class="hint">~0,255 tCO₂ por voo doméstico</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Tipo de combustível / veículo</label>
+          <select id="sel-comb">
+            <option value="0.21">Gasolina — 0,21 kg CO₂/km</option>
+            <option value="0.14">Etanol — 0,14 kg CO₂/km</option>
+            <option value="0.27">Diesel — 0,27 kg CO₂/km</option>
+            <option value="0.05">Elétrico (rede BR) — 0,05 kg CO₂/km</option>
+            <option value="0">A pé / bicicleta — 0 kg CO₂/km</option>
+          </select>
+        </div>
+
+        <!-- Empresa: frota -->
+        <div class="field empresa-field" style="display:none">
+          <label>Tamanho da frota (nº de veículos)</label>
+          <div class="input-wrap">
+            <input type="number" id="inp-frota" min="0" placeholder="ex: 10">
+            <span class="input-unit">veículos</span>
+          </div>
+          <span class="hint">Os km acima serão multiplicados pela frota</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── ENERGIA ── -->
+    <div class="category-card">
+      <div class="category-header">
+        <div class="cat-icon">⚡</div>
+        <div>
+          <div class="cat-name">Energia</div>
+          <div class="cat-sub">Eletricidade e gás de cozinha</div>
+        </div>
+      </div>
+      <div class="category-body">
+
+        <div class="field-row">
+          <div class="field">
+            <label>Consumo elétrico mensal</label>
+            <div class="input-wrap">
+              <input type="number" id="inp-kwh" min="0" placeholder="ex: 200">
+              <span class="input-unit">kWh/mês</span>
+            </div>
+            <span class="hint">Veja na sua conta de luz</span>
+          </div>
+
+          <div class="field">
+            <label>Botijões de gás (P13) por mês</label>
+            <div class="input-wrap">
+              <input type="number" id="inp-gas" min="0" step="0.1" placeholder="ex: 0.5">
+              <span class="input-unit">botijões</span>
+            </div>
+            <span class="hint">~6,6 kg CO₂ por botijão P13</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Fonte de energia principal</label>
+          <select id="sel-fonte">
+            <option value="0.075">Rede elétrica brasileira — 0,075 kg CO₂/kWh</option>
+            <option value="0">Solar / eólico próprio — 0 kg CO₂/kWh</option>
+            <option value="0.4">Gerador a diesel — 0,4 kg CO₂/kWh</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── ALIMENTAÇÃO (pessoa física) ── -->
+    <div class="category-card pessoa-field">
+      <div class="category-header">
+        <div class="cat-icon">🥩</div>
+        <div>
+          <div class="cat-name">Alimentação</div>
+          <div class="cat-sub">Dieta e desperdício alimentar</div>
+        </div>
+      </div>
+      <div class="category-body">
+
+        <div class="field">
+          <label>Perfil alimentar</label>
+          <select id="sel-dieta">
+            <option value="3.3">Onívoro — carne vermelha frequente &nbsp;(3,3 tCO₂/ano)</option>
+            <option value="2.5">Onívoro moderado &nbsp;(2,5 tCO₂/ano)</option>
+            <option value="1.7">Flexitariano / pouca carne &nbsp;(1,7 tCO₂/ano)</option>
+            <option value="1.2">Vegetariano &nbsp;(1,2 tCO₂/ano)</option>
+            <option value="0.7">Vegano &nbsp;(0,7 tCO₂/ano)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Desperdício de alimentos estimado</label>
+          <div class="input-wrap">
+            <input type="number" id="inp-desp" min="0" max="100" placeholder="ex: 20">
+            <span class="input-unit">%</span>
+          </div>
+          <span class="hint">Média brasileira: ~30% — cada tonelada desperdiçada gera ~0,25 tCO₂</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── PRODUÇÃO / EMPRESA ── -->
+    <div class="category-card empresa-field" style="display:none">
+      <div class="category-header">
+        <div class="cat-icon">🏭</div>
+        <div>
+          <div class="cat-name">Produção industrial</div>
+          <div class="cat-sub">Processo produtivo e cadeia de valor</div>
+        </div>
+      </div>
+      <div class="category-body">
+
+        <div class="field">
+          <label>Setor de atuação</label>
+          <select id="sel-setor">
+            <option value="0.5">Serviços / escritório — 0,5 tCO₂/func/ano</option>
+            <option value="2">Varejo / logística — 2 tCO₂/func/ano</option>
+            <option value="5">Manufatura leve — 5 tCO₂/func/ano</option>
+            <option value="12">Manufatura pesada — 12 tCO₂/func/ano</option>
+            <option value="25">Mineração / petróleo — 25 tCO₂/func/ano</option>
+          </select>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Número de funcionários</label>
+            <div class="input-wrap">
+              <input type="number" id="inp-func" min="1" placeholder="ex: 50">
+              <span class="input-unit">pessoas</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Energia renovável usada</label>
+            <div class="input-wrap">
+              <input type="number" id="inp-renov" min="0" max="100" placeholder="ex: 20">
+              <span class="input-unit">%</span>
+            </div>
+            <span class="hint">Reduz fator de emissão energética</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── RESÍDUOS ── -->
+    <div class="category-card">
+      <div class="category-header">
+        <div class="cat-icon">🗑️</div>
+        <div>
+          <div class="cat-name">Resíduos</div>
+          <div class="cat-sub">Lixo gerado e destinação</div>
+        </div>
+      </div>
+      <div class="category-body">
+
+        <div class="field-row">
+          <div class="field">
+            <label>Lixo gerado por semana</label>
+            <div class="input-wrap">
+              <input type="number" id="inp-lixo" min="0" step="0.5" placeholder="ex: 5">
+              <span class="input-unit">kg/semana</span>
+            </div>
+            <span class="hint">Média residencial: ~5 kg/semana</span>
+          </div>
+
+          <div class="field">
+            <label>Destinação do lixo</label>
+            <select id="sel-lixo" style="height:100%;max-height:52px">
+              <option value="0.5">Aterro sanitário — 0,50 kg CO₂/kg</option>
+              <option value="0.25">Coleta seletiva + reciclagem parcial</option>
+              <option value="0.1">Compostagem + reciclagem avançada</option>
+              <option value="0.8">Lixão a céu aberto — 0,80 kg CO₂/kg</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── BOTÕES ── -->
+    <button class="btn-calcular" onclick="calcular()">
+      <span>🧮</span> Calcular minha pegada de carbono
+    </button>
+    <button class="btn-limpar" onclick="limpar()">Limpar todos os campos</button>
+
+  </div><!-- fim form-panel -->
+
+
+  <!-- ════════════ RESULTADO ════════════ -->
+  <div class="result-panel">
+
+    <!-- Card principal -->
+    <div class="result-card">
+      <div class="result-header-label">Emissão estimada</div>
+      <div class="result-total zero" id="total-num">—</div>
+      <div class="result-unit">toneladas de CO₂ por ano</div>
+
+      <div id="badge-nivel" class="level-badge level-otimo">
+        <span id="badge-icon">✦</span>
+        <span id="badge-texto">Preencha e calcule</span>
+      </div>
+
+      <!-- Breakdown -->
+      <div id="breakdown-section" style="display:none">
+        <hr class="divider">
+        <div class="breakdown-title">Distribuição por categoria</div>
+        <div class="breakdown-list">
+          <div class="breakdown-item">
+            <span class="breakdown-icon">🚗</span>
+            <span class="breakdown-name">Transporte</span>
+            <div class="breakdown-bar-wrap"><div class="breakdown-bar-fill" id="br-transporte-fill" style="width:0%"></div></div>
+            <span class="breakdown-val" id="br-transporte-val">—</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="breakdown-icon">⚡</span>
+            <span class="breakdown-name">Energia</span>
+            <div class="breakdown-bar-wrap"><div class="breakdown-bar-fill" id="br-energia-fill" style="width:0%"></div></div>
+            <span class="breakdown-val" id="br-energia-val">—</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="breakdown-icon">🥩</span>
+            <span class="breakdown-name" id="br-alim-label">Alimentação</span>
+            <div class="breakdown-bar-wrap"><div class="breakdown-bar-fill" id="br-alimentacao-fill" style="width:0%"></div></div>
+            <span class="breakdown-val" id="br-alimentacao-val">—</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="breakdown-icon">♻️</span>
+            <span class="breakdown-name">Resíduos</span>
+            <div class="breakdown-bar-wrap"><div class="breakdown-bar-fill" id="br-residuos-fill" style="width:0%"></div></div>
+            <span class="breakdown-val" id="br-residuos-val">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Equivalências -->
+    <div class="equiv-card" id="equiv-card" style="display:none">
+      <div class="equiv-title">Isso equivale a...</div>
+      <div class="equiv-grid">
+        <div class="equiv-item">
+          <span class="equiv-icon-big">🌳</span>
+          <span class="equiv-num" id="equiv-arvores">—</span>
+          <span class="equiv-desc">árvores para compensar por 1 ano</span>
+        </div>
+        <div class="equiv-item">
+          <span class="equiv-icon-big">✈️</span>
+          <span class="equiv-num" id="equiv-voos">—</span>
+          <span class="equiv-desc">voos SP → Rio de Janeiro</span>
+        </div>
+        <div class="equiv-item">
+          <span class="equiv-icon-big">🚗</span>
+          <span class="equiv-num" id="equiv-km">—</span>
+          <span class="equiv-desc">km a gasolina</span>
+        </div>
+        <div class="equiv-item">
+          <span class="equiv-icon-big">💡</span>
+          <span class="equiv-num" id="equiv-luz">—</span>
+          <span class="equiv-desc">meses de conta de luz média</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Medidor -->
+    <div class="meter-card">
+      <div class="meter-card-title">Vs. média brasileira</div>
+      <div class="meter-bar">
+        <div class="meter-fill" id="meter-fill"></div>
+      </div>
+      <div class="meter-status" id="meter-status" style="color:#aaa">—</div>
+      <div class="meter-ref" id="meter-ref">Referência: 2,2 tCO₂/pessoa/ano (BR)</div>
+    </div>
+
+    <!-- Comparação -->
+    <div class="compare-card">
+      <div class="compare-title">Referências globais</div>
+      <div class="compare-row">
+        <span class="compare-name">Média mundial</span>
+        <span class="compare-val">4,7 t</span>
+      </div>
+      <div class="compare-row">
+        <span class="compare-name">Média brasileira</span>
+        <span class="compare-val">2,2 t</span>
+      </div>
+      <div class="compare-row">
+        <span class="compare-name">Meta Acordo de Paris</span>
+        <span class="compare-val">2,0 t</span>
+      </div>
+      <div class="compare-row">
+        <span class="compare-name">EUA (média)</span>
+        <span class="compare-val">14,4 t</span>
+      </div>
+      <div class="compare-row compare-you-row">
+        <span class="compare-name">Você / sua empresa</span>
+        <span class="compare-val" id="compare-you">—</span>
+      </div>
+    </div>
+
+    <!-- Relatório -->
+    <button class="btn-relatorio" id="btn-relatorio" onclick="gerarRelatorio()" disabled>
+      📋 Ver recomendações de redução
+    </button>
+
+  </div><!-- fim result-panel -->
+
+</div><!-- fim calc-layout -->
+
+
+<!-- ═══════ MODAL RELATÓRIO ═══════ -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="fecharModal()">×</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script src="js/calculadora.js"></script>
+</body>
+</html>
