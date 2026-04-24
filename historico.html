@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meu Histórico</title>
+  <link rel="stylesheet" href="css/historico.css">
+</head>
+<body>
+
+<nav>
+  <div class="logo">Projeto CO₂</div>
+  <div class="nav-right">
+    <span class="nav-user" id="nav-user">…</span>
+    <a href="calculadora.html" class="nav-link">Voltar à calculadora</a>
+    <button class="btn-logout" onclick="sbSignOut()">Sair</button>
+  </div>
+</nav>
+
+<!-- Tela Hero Verde-->
+<div class="hero-hist">
+  <div class="hero-over">Pessoa Jurídica · GHG Protocol</div> <!--padrão internacional mais utilizado no mundo para medir e gerenciar emissões de gases de efeito estufa (GEE) por empresas e governos-->
+  <h1>Meu <em>Histórico</em> de Emissões</h1>
+  <p>Todos os inventários de carbono calculados pela sua conta, do mais recente ao mais antigo.</p>
+</div>
+
+<!-- Tela principal -->
+<div class="hist-main">
+
+  <div class="hist-header">
+    <div class="hist-count" id="hist-count">Carregando…</div>
+    <a href="calculadora.html" class="btn-novo">＋ Novo cálculo</a>
+  </div>
+
+  <!-- Carregando -->
+  <div class="loading-wrap" id="loading">
+    <div class="loading-spinner"></div>
+    <span>Buscando seus cálculos…</span>
+  </div>
+
+  <!-- Vazio -->
+  <div class="empty-hist" id="empty" style="display:none">
+    <div class="empty-ico">🌱</div>
+    <h3>Nenhum cálculo ainda</h3>
+    <p>Você ainda não realizou nenhum inventário de emissões. Que tal começar agora?</p>
+    <a href="calculadora.html" class="btn-novo" style="display:inline-flex;width:auto;">＋ Fazer primeiro cálculo</a>
+  </div>
+
+  <!-- Lista -->
+  <div class="calc-list" id="calc-list"></div>
+
+</div>
+
+<!-- Supabase CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- JavaScript utilizados -->
+<script src="js/Supabase.js"></script>
+<script src="js/Historico.js"></script>
+
+</body>
+</html>
