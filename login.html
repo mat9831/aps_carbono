@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tela de Login</title>
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+
+<!-- PAINEL ESQUERDO -->
+<div class="left-panel">
+
+  <!-- Topo: logo + botão voltar lado a lado -->
+  <div class="lp-top">
+    <div class="lp-logo">Projeto CO₂</div>
+    <a href="index.html" class="btn-voltar">Voltar para o início</a>
+  </div>
+
+  <!-- Textos -->
+  <div class="lp-content">
+    <div class="lp-tag">Calculadora Empresarial de CO₂</div>
+    <h1 class="lp-title">Meça, gerencie e <em>compense</em> as emissões da sua empresa</h1>
+    <p class="lp-desc">
+      Plataforma completa para inventário de gases de efeito estufa conforme o GHG Protocol.
+      Salve seus cálculos e acompanhe sua evolução ao longo do tempo.
+    </p>
+
+    <!-- Ícones de benefícios -->
+    <div class="lp-features">
+      <div class="lp-feat">
+        <div class="lp-feat-ico">🧮</div>
+        Cálculo por 5 categorias de emissão (Escopos 1, 2 e 3)
+      </div>
+      <div class="lp-feat">
+        <div class="lp-feat-ico">📊</div>
+        Histórico completo de todos os seus inventários
+      </div>
+      <div class="lp-feat">
+        <div class="lp-feat-ico">💰</div>
+        Cálculo de créditos de carbono e lucro estimado
+      </div>
+      <div class="lp-feat">
+        <div class="lp-feat-ico">🌳</div>
+        Equivalências visuais: árvores, voos, km rodados
+      </div>
+    </div>
+  </div>
+
+  <div class="lp-footer">© 2026 Projeto CO₂ · Dados protegidos pelo Supabase</div>
+</div>
+
+<!-- PAINEL DIREITO — FORMULÁRIO -->
+<div class="right-panel">
+  <div class="auth-box">
+
+    <!-- Toggle Login / Cadastro -->
+    <div class="auth-toggle">
+      <button class="auth-tab active" id="tab-login"    onclick="setModo('login')">Entrar</button>
+      <button class="auth-tab"        id="tab-cadastro" onclick="setModo('cadastro')">Criar conta</button>
+    </div>
+
+    <!-- Mensagem de feedback -->
+    <div class="auth-msg" id="auth-msg"></div>
+
+    <!-- FORMULÁRIO -->
+    <form class="auth-form" id="auth-form" onsubmit="submitForm(event)">
+
+      <!-- Cabeçalho dinâmico -->
+      <div>
+        <div class="auth-title" id="form-title">Bem-vindo de volta</div>
+        <div class="auth-sub"   id="form-sub">Entre com sua conta para acessar a calculadora.</div>
+      </div>
+
+      <!-- Nome da empresa (só no cadastro) -->
+      <div class="auth-field only-cadastro" id="field-empresa">
+        <label for="inp-empresa">Nome da empresa</label>
+        <div class="auth-input-wrap">
+          <span class="inp-ico">🏢</span>
+          <input type="text" id="inp-empresa" placeholder="Ex: Empresa Verde Ltda." autocomplete="organization">
+        </div>
+      </div>
+
+      <!-- E-mail -->
+      <div class="auth-field">
+        <label for="inp-email">E-mail corporativo</label>
+        <div class="auth-input-wrap">
+          <span class="inp-ico">✉️</span>
+          <input type="email" id="inp-email" placeholder="seu@email.com.br" required autocomplete="email">
+        </div>
+      </div>
+
+      <!-- Senha -->
+      <div class="auth-field">
+        <label for="inp-senha">Senha</label>
+        <div class="auth-input-wrap">
+          <span class="inp-ico">🔒</span>
+          <input type="password" id="inp-senha" placeholder="Mínimo 8 caracteres" required autocomplete="current-password">
+          <button type="button" class="toggle-pass" onclick="toggleSenha('inp-senha', this)">Mostrar</button>
+        </div>
+      </div>
+
+      <!-- Confirmar senha (só no cadastro) -->
+      <div class="auth-field only-cadastro" id="field-confirmar">
+        <label for="inp-confirmar">Confirmar senha</label>
+        <div class="auth-input-wrap">
+          <span class="inp-ico">🔒</span>
+          <input type="password" id="inp-confirmar" placeholder="Digite a senha novamente" autocomplete="new-password">
+          <button type="button" class="toggle-pass" onclick="toggleSenha('inp-confirmar', this)">Mostrar</button>
+        </div>
+      </div>
+
+      <!-- Botão principal -->
+      <button type="submit" class="btn-auth" id="btn-submit">
+        <div class="spinner" id="spinner"></div>
+        <span id="btn-label">Entrar na plataforma</span>
+      </button>
+
+    </form>
+
+    <!-- Link criar conta -->
+    <div class="auth-switch" id="auth-switch">
+      Não tem uma conta?
+      <a onclick="setModo('cadastro')">Criar conta grátis</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- Supabase CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- JavaScript Supabase -->
+<script src="js/Supabase.js"></script>
+<!-- JavaScript login -->
+<script src="js/Telalogin.js"></script>
+
+</body>
+</html>
